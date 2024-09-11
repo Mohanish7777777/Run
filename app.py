@@ -1,4 +1,3 @@
-# app.py
 from flask import Flask, Response, request
 from ptyprocess import PtyProcess
 import os
