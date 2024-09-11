@@ -1,34 +1,34 @@
-from flask import Flask, Response, request
+# app.py
+from flask import Flask, render_template
+from flask_socketio import SocketIO, emit
 from ptyprocess import PtyProcess
 import os
 import select
 
 app = Flask(__name__)
+socketio = SocketIO(app)
 
 # Initialize a PTY (Pseudo-Terminal)
 process = PtyProcess.spawn(['/bin/bash'])
 
 @app.route('/')
 def index():
-    return 'Web-Based Terminal is Running! Access the /shell endpoint to use it.'
+    return render_template('index.html')
 
-@app.route('/shell', methods=['GET', 'POST'])
-def shell():
-    if request.method == 'POST':
-        # Read user input and send it to the PTY
-        command = request.form.get('command') + '\n'
-        process.write(command.encode())
-
+@socketio.on('command')
+def handle_command(data):
+    command = data['command'] + '\n'
+    process.write(command.encode())
+    
     # Read the output from the PTY
     output = b""
     while process.isalive():
         r, _, _ = select.select([process.fd], [], [], 0)
         if process.fd in r:
             output += process.read()
-
-    return Response(output.decode(), mimetype='text/plain')
+    
+    emit('response', {'output': output.decode()})
 
 if __name__ == '__main__':
-    # Run the app
     port = int(os.environ.get("PORT", 8080))  # Koyeb uses PORT environment variable
-    app.run(host='0.0.0.0', port=port)
+    socketio.run(app, host='0.0.0.0', port=port)
