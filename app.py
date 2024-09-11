@@ -5,10 +5,11 @@ import os
 
 app = Flask(__name__)
 
-# Create the Shell2HTTP object
-shell2http = Shell2HTTP(app=app, base_url_prefix="/", commands={
-    'shell': '/bin/bash'  # Specify the shell you want to use, here we use bash
-})
+# Initialize Shell2HTTP without the 'commands' argument in __init__
+shell2http = Shell2HTTP(app=app, base_url_prefix="/")
+
+# Register commands for Shell2HTTP
+shell2http.register_command(endpoint="shell", command_name="/bin/bash")
 
 # Define a simple route to ensure the app is running
 @app.route('/')
