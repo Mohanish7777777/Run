@@ -1,12 +1,12 @@
-# app.py
 from flask import Flask, render_template
 from flask_socketio import SocketIO, emit
 from ptyprocess import PtyProcess
 import os
 import select
+import sys
 
 app = Flask(__name__)
-socketio = SocketIO(app, async_mode='eventlet')
+socketio = SocketIO(app)
 
 # Initialize a PTY (Pseudo-Terminal)
 process = PtyProcess.spawn(['/bin/bash'])
@@ -31,4 +31,4 @@ def handle_command(data):
 
 if __name__ == '__main__':
     # Run the app using the WSGI server specified in Procfile
-    pass
+    socketio.run(app, host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
