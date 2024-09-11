@@ -6,7 +6,7 @@ import os
 import select
 
 app = Flask(__name__)
-socketio = SocketIO(app)
+socketio = SocketIO(app, async_mode='eventlet')
 
 # Initialize a PTY (Pseudo-Terminal)
 process = PtyProcess.spawn(['/bin/bash'])
@@ -30,5 +30,5 @@ def handle_command(data):
     emit('response', {'output': output.decode()})
 
 if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 8080))  # Koyeb uses PORT environment variable
-    socketio.run(app, host='0.0.0.0', port=port)
+    # Run the app using the WSGI server specified in Procfile
+    pass
