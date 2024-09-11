@@ -3,7 +3,6 @@ from flask_socketio import SocketIO, emit
 from ptyprocess import PtyProcess
 import os
 import select
-import sys
 
 app = Flask(__name__)
 socketio = SocketIO(app)
@@ -30,5 +29,4 @@ def handle_command(data):
     emit('response', {'output': output.decode()})
 
 if __name__ == '__main__':
-    # Run the app using the WSGI server specified in Procfile
     socketio.run(app, host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
