@@ -1,0 +1,28 @@
+<!-- index.html -->
+<html>
+<head>
+    <title>SocketIO Test</title>
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var socket = io();
+
+            // Send command on button click
+            document.getElementById('sendCommand').addEventListener('click', function () {
+                var command = document.getElementById('commandInput').value;
+                socket.emit('command', { command: command });
+            });
+
+            // Listen for response
+            socket.on('response', function (data) {
+                document.getElementById('output').textContent = data.output;
+            });
+        });
+    </script>
+</head>
+<body>
+    <input id="commandInput" type="text" placeholder="Enter command" />
+    <button id="sendCommand">Send Command</button>
+    <pre id="output"></pre>
+</body>
+</html>
