@@ -1,36 +1,28 @@
-<!-- templates/index.html -->
-<!DOCTYPE html>
+<!-- index.html -->
 <html>
 <head>
-    <title>Web-Based Terminal</title>
-    <style>
-        body { font-family: Arial, sans-serif; }
-        #terminal { height: 80vh; border: 1px solid #ddd; padding: 10px; background-color: #000; color: #0f0; }
-        input { width: 100%; box-sizing: border-box; }
-    </style>
-</head>
-<body>
-    <div id="terminal"></div>
-    <input id="command" type="text" placeholder="Type your command here...">
-
-    <script src="https://cdn.socket.io/4.3.2/socket.io.min.js"></script>
+    <title>SocketIO Test</title>
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
     <script>
-        const socket = io();
-        const terminal = document.getElementById('terminal');
-        const commandInput = document.getElementById('command');
+        document.addEventListener('DOMContentLoaded', function () {
+            var socket = io();
 
-        socket.on('response', (data) => {
-            terminal.textContent += data.output;
-            terminal.scrollTop = terminal.scrollHeight;
-        });
+            // Send command on button click
+            document.getElementById('sendCommand').addEventListener('click', function () {
+                var command = document.getElementById('commandInput').value;
+                socket.emit('command', { command: command });
+            });
 
-        commandInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                const command = commandInput.value;
-                socket.emit('command', { command });
-                commandInput.value = '';
-            }
+            // Listen for response
+            socket.on('response', function (data) {
+                document.getElementById('output').textContent = data.output;
+            });
         });
     </script>
+</head>
+<body>
+    <input id="commandInput" type="text" placeholder="Enter command" />
+    <button id="sendCommand">Send Command</button>
+    <pre id="output"></pre>
 </body>
 </html>
