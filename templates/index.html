@@ -1,0 +1,36 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Web-Based Terminal</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        #terminal { height: 80vh; border: 1px solid #ddd; padding: 10px; background-color: #000; color: #0f0; }
+        input { width: 100%; box-sizing: border-box; }
+    </style>
+</head>
+<body>
+    <div id="terminal"></div>
+    <input id="command" type="text" placeholder="Type your command here...">
+
+    <script src="https://cdn.socket.io/4.3.2/socket.io.min.js"></script>
+    <script>
+        const socket = io();
+        const terminal = document.getElementById('terminal');
+        const commandInput = document.getElementById('command');
+
+        socket.on('response', (data) => {
+            terminal.textContent += data.output;
+            terminal.scrollTop = terminal.scrollHeight;
+        });
+
+        commandInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const command = commandInput.value;
+                socket.emit('command', { command });
+                commandInput.value = '';
+            }
+        });
+    </script>
+</body>
+</html>
