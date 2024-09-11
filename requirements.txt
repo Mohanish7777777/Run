@@ -1,2 +1,2 @@
-flask
-flask-shell2http
+flask==2.3.2
+ptyprocess==0.7.0
